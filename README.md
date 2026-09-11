@@ -37,7 +37,59 @@ enviro365/
 
 ## API Documentation
 
-*(To be added as endpoints are built)*
+### GET /api/investors/{id}
+Returns an investor's portfolio (details + products).
+
+**Example:** `GET /api/investors/1`
+
+**Response `200 OK`:**
+```json
+{
+  "id": 1,
+  "name": "Thandiwe Mokoena",
+  "age": 70,
+  "products": [
+    {
+      "id": 1,
+      "name": "Retirement Annuity",
+      "type": "RETIREMENT",
+      "balance": 500000
+    }
+  ]
+}
+```
+
+### POST /api/withdrawals
+Submits a withdrawal notice. Validates business rules before approving.
+
+**Request body:**
+```json
+{
+  "productId": 1,
+  "amount": 10000
+}
+```
+
+**Response `201 Created`** on success, with the created withdrawal notice.
+
+**Business rule errors return `400 Bad Request`**, e.g.:
+```json
+{
+  "timestamp": "2026-09-11T10:15:47.76",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Retirement withdrawals are only allowed for investors over 65."
+}
+```
+
+Validated rules:
+- Retirement product withdrawals require investor age > 65
+- Withdrawal amount cannot exceed the product's current balance
+- Withdrawal amount cannot exceed 90% of the product's current balance
+- `amount` must be a positive number (`@Positive` validation)
+
+### GET /api/statements/export
+*(Coming next — CSV export of withdrawal history)*
 
 ## AI Usage Disclosure
 
@@ -57,4 +109,8 @@ design, and the mapper pattern for entity/DTO separation.
 
 ## Screenshots
 
-*(To be added once frontend is built)*
+### Successful withdrawal (Postman)
+![Successful withdrawal](docs/screenshots/postman-success.png)
+
+### Age restriction rejection (Postman)
+![Age restriction error](docs/screenshots/postman-age-rejection.png)
