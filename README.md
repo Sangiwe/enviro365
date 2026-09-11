@@ -89,7 +89,20 @@ Validated rules:
 - `amount` must be a positive number (`@Positive` validation)
 
 ### GET /api/statements/export
-*(Coming next — CSV export of withdrawal history)*
+Exports withdrawal history as a CSV file. All query parameters are optional and can be combined.
+
+**Query parameters:**
+- `investorId` (optional) — filter to a single investor
+- `startDate` (optional, format `YYYY-MM-DD`) — only withdrawals on/after this date
+- `endDate` (optional, format `YYYY-MM-DD`) — only withdrawals on/before this date
+
+**Example:** `GET /api/statements/export?investorId=1&startDate=2026-01-01&endDate=2026-12-31`
+
+**Response `200 OK`** — CSV file download (`Content-Disposition: attachment`):
+```
+Withdrawal ID,Investor Name,Product Name,Amount,Date Requested,Status
+1,Thandiwe Mokoena,Retirement Annuity,10000.00,2026-09-11,APPROVED
+```
 
 ## AI Usage Disclosure
 
