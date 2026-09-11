@@ -5,6 +5,7 @@ import com.enviro.assessment.junior.sangiwe.exception.*;
 import com.enviro.assessment.junior.sangiwe.repository.ProductRepository;
 import com.enviro.assessment.junior.sangiwe.repository.WithdrawalNoticeRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -60,5 +61,9 @@ public class WithdrawalService {
         notice.setStatus(WithdrawalStatus.APPROVED);
 
         return withdrawalNoticeRepository.save(notice);
+    }
+
+    public List<WithdrawalNotice> getWithdrawalsForInvestor(Long investorId) {
+        return withdrawalNoticeRepository.findWithFilters(investorId, null, null);
     }
 }

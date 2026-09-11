@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController                        // combines @Controller + @ResponseBody: every method's
                                        // return value is written straight to the HTTP response body as JSON
@@ -31,5 +33,18 @@ public class WithdrawalController {
         WithdrawalResponseDto response = WithdrawalMapper.toDto(notice);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/investor/{investorId}")
+    public ResponseEntity<List<WithdrawalResponseDto>> getWithdrawalsForInvestor(
+            @PathVariable Long investorId) {
+
+        List<WithdrawalNotice> notices = withdrawalService.getWithdrawalsForInvestor(investorId);
+
+        List<WithdrawalResponseDto> response = notices.stream()
+                .map(WithdrawalMapper::toDto)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
     }
 }
