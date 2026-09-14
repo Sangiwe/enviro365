@@ -7,16 +7,15 @@ Junior Software Developer assessment (2026).
 ## Tech Stack
 
 - **Backend:** Java 21, Spring Boot 4.1.1, Spring Data JPA, H2 (in-memory)
-- **Frontend:** TBD
+- **Frontend:** React 18 (Vite), plain CSS
 - **Testing:** JUnit 5, Mockito
 
 ## Project Structure
 
-enviro365/
+```enviro365/
 ├── backend/ # Spring Boot API
-└── frontend/ # UI (TBD)
-
-
+└── frontend/ # React UI
+```
 ## Business Rules Implemented
 
 - Retirement product withdrawals only allowed if investor age > 65
@@ -33,7 +32,12 @@ enviro365/
 5. H2 in-memory database seeds automatically on startup with test data (2 investors, 3 products)
 
 ### Frontend
-*(To be added)*
+1. Requires Node.js 18+
+2. Navigate to `frontend/`
+3. Run `npm install`
+4. Run `npm run dev`
+5. App runs on `http://localhost:5173`
+6. Backend must be running on `http://localhost:8080` first (CORS is configured to allow only this frontend origin)
 
 ## API Documentation
 
@@ -88,6 +92,13 @@ Validated rules:
 - Withdrawal amount cannot exceed 90% of the product's current balance
 - `amount` must be a positive number (`@Positive` validation)
 
+### GET /api/withdrawals/investor/{investorId}
+Returns JSON withdrawal history for a single investor (used by the frontend's history table — separate from the CSV export, which returns plain text for download).
+
+**Example:** `GET /api/withdrawals/investor/1`
+
+**Response `200 OK`:** array of withdrawal notices, same shape as the `POST /api/withdrawals` response.
+
 ### GET /api/statements/export
 Exports withdrawal history as a CSV file. All query parameters are optional and can be combined.
 
@@ -115,10 +126,21 @@ AI assistance so far:
 - Business rule implementation in WithdrawalService
 - Unit test structure using Mockito (mocking repositories, stubbing, verifying calls)
 - DTO and mapper class structure to avoid exposing entities directly / circular JSON references
+- React component structure and the "lift state up" pattern (App.jsx owning shared portfolio/withdrawal data, passed down to PortfolioDashboard, WithdrawalForm, WithdrawalHistoryTable as props)
+- Frontend input validation in WithdrawalForm, alongside backend validation
+- CORS configuration to allow the React dev server to call the Spring Boot API
+- CSS design direction and styling
 
 All AI-suggested code was reviewed, tested, and understood before being committed —
 particularly the reasoning behind BigDecimal for currency, the exception hierarchy
 design, and the mapper pattern for entity/DTO separation.
+
+## Known Limitations / Assumptions
+
+- Frontend is hardcoded to a single investor (id 1) — no login or investor selection, since the brief doesn't describe authentication. In a real system, the investor would come from a logged-in session.
+- H2 is in-memory, so all data (including any withdrawals submitted) resets on every backend restart, aside from the seeded starter data.
+- "Retirement" status lives on the Product, not the withdrawal request itself — a product is either a retirement product or not, rather than the user choosing a withdrawal type.
+- CSV generation uses manual string building rather than a CSV library, since none of the exported fields contain commas or special characters that would need escaping.
 
 ## Screenshots
 
@@ -127,3 +149,15 @@ design, and the mapper pattern for entity/DTO separation.
 
 ### Age restriction rejection (Postman)
 ![Age restriction error](docs/screenshots/postman-age-rejection.png)
+
+### Portfolio dashboard and withdrawal form
+![Dashboard and form](docs/screenshots/dashboard.png)
+
+### Business rule rejection shown in UI (90% withdrawal limit)
+![UI validation error](docs/screenshots/validation-error.png)
+
+### Withdrawal history table
+![History table](docs/screenshots/history-table.png)
+
+### CSV export opened in Excel
+![CSV in Excel](docs/screenshots/downloaded-CSV.png)
