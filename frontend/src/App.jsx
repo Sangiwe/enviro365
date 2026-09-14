@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getPortfolio, getWithdrawalHistory } from "./api/api";
+import { getPortfolio, getWithdrawalHistory, getCsvExportUrl } from "./api/api";
 import PortfolioDashboard from "./components/PortfolioDashboard";
 import WithdrawalForm from "./components/WithdrawalForm";
 import WithdrawalHistoryTable from "./components/WithdrawalHistoryTable";
@@ -25,8 +25,8 @@ function App() {
     }
 
     function handleWithdrawalSuccess() {
-        loadPortfolio();     // balance changed, so refresh it
-        loadWithdrawals();   // new row to show
+        loadPortfolio();
+        loadWithdrawals();
     }
 
     useEffect(() => {
@@ -51,6 +51,15 @@ function App() {
             )}
 
             <WithdrawalHistoryTable withdrawals={withdrawals} />
+
+            {/* Added the missing '<a' below */}
+            <a
+                className="csv-export"
+                href={getCsvExportUrl(investorId)}
+                download
+            >
+                Download statement (CSV)
+            </a>
         </div>
     );
 }
