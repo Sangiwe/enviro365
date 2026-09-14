@@ -30,6 +30,7 @@ Junior Software Developer assessment (2026).
 3. Run `./mvnw spring-boot:run`
 4. App starts on `http://localhost:8080`
 5. H2 in-memory database seeds automatically on startup with test data (2 investors, 3 products)
+6. Run `./mvnw test` to execute the unit tests (5 tests covering WithdrawalService business rules)
 
 ### Frontend
 1. Requires Node.js 18+
